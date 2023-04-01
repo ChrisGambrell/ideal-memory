@@ -8,6 +8,7 @@ export default function SignUp() {
         <Center>
           <Title order={2}>Sign up</Title>
         </Center>
+        <TextInput label="Full name" placeholder="Your name" />
         <TextInput label="Email address" placeholder="you@example.com" />
         <PasswordInput label="Password" />
         <Anchor component={Link} href="/sign-in">
