@@ -8,7 +8,7 @@ This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3
 
 - Add, toggle completion, and delete tasks
 - Search for tasks
-- Fiilter tasks based on completed state
+- Filter tasks based on completed state
 
 ### Phase 2: Authentication
 
