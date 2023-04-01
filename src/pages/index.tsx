@@ -1,4 +1,4 @@
-import { Checkbox, Container, Stack } from "@mantine/core";
+import { Checkbox, Container, Divider, Stack } from "@mantine/core";
 import Head from "next/head";
 import { type ChangeEvent } from "react";
 import { api } from "~/utils/api";
@@ -22,8 +22,11 @@ export default function Home() {
       </Head>
       <Container mt={16} size="xs">
         <Stack spacing="xs">
-          {tasks.map((task) => (
-            <Checkbox key={task.id} label={task.body} checked={task.completed} onChange={toggleTask(task.id)} />
+          {tasks.map((task, i) => (
+            <>
+              <Checkbox key={task.id} label={task.body} checked={task.completed} onChange={toggleTask(task.id)} />
+              {i !== tasks.length - 1 && <Divider my={4} />}
+            </>
           ))}
         </Stack>
       </Container>
