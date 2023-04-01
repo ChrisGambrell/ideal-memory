@@ -1,12 +1,15 @@
 import { Anchor, Button, Center, Container, PasswordInput, Stack, Text, TextInput, Title } from "@mantine/core";
 import { useForm, zodResolver } from "@mantine/form";
+import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { useState } from "react";
 import { z } from "zod";
-import { api } from "~/utils/api";
 
 export default function SignIn() {
   const router = useRouter();
+  const { callbackUrl } = router.query;
+  const [loadingSignIn, setLoadingSignIn] = useState(false);
 
   const form = useForm({
     initialValues: { root: "", email: "", password: "" },
@@ -18,12 +21,19 @@ export default function SignIn() {
     ),
   });
 
-  const { mutate: signIn, isLoading: loadingSignIn } = api.auth.signIn.useMutation({
-    onSuccess: () => router.push("/"),
-    onError: (error) => form.setFieldError("root", error.message),
-  });
+  const handleSubmit = async (values: typeof form.values) => {
+    setLoadingSignIn(true);
 
-  const handleSubmit = (values: typeof form.values) => signIn(values);
+    const res = await signIn("credentials", {
+      email: values.email,
+      password: values.password,
+      redirect: false,
+    });
+
+    setLoadingSignIn(false);
+    if (res?.error) form.setFieldError("root", res.error);
+    else void router.push((callbackUrl as string) ?? "/");
+  };
 
   return (
     <Container mt={16} size="xs">

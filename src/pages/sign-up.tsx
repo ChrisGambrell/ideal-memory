@@ -24,7 +24,7 @@ export default function SignUp() {
     ),
   });
 
-  const { mutate: signUp, isLoading: loadingSignUp } = api.auth.signUp.useMutation({
+  const { mutate: signUp, isLoading: loadingSignUp } = api.users.create.useMutation({
     onSuccess: () => router.push("/sign-in"),
     onError: (error) => form.setFieldError("root", error.message),
   });

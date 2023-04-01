@@ -1,11 +1,15 @@
-import { ActionIcon, Checkbox, Container, Divider, Group, Menu, Stack, Text, TextInput } from "@mantine/core";
+import { ActionIcon, Button, Checkbox, Container, Divider, Group, Menu, Stack, Text, TextInput, Title } from "@mantine/core";
 import { IconFilter, IconSquareCheck, IconSquareOff, IconTrash } from "@tabler/icons-react";
+import { signOut } from "next-auth/react";
 import { Fragment, useState, type ChangeEvent } from "react";
+import { verifyAuth } from "~/server/auth";
 import { api } from "~/utils/api";
+import { useUser } from "~/utils/hooks";
 
 export default function Home() {
   const [taskFilter, setTaskFilter] = useState("");
   const [completedFilter, setCompletedFilter] = useState<boolean | null>(null);
+  const user = useUser();
 
   const ctx = api.useContext();
   const { data: tasks = [], isLoading: loadingTasks } = api.tasks.getAll.useQuery();
@@ -24,6 +28,12 @@ export default function Home() {
   return (
     <Container mt={16} size="xs">
       <Stack spacing="xl">
+        <Group position="apart">
+          <Title order={2}>Welcome, {user.name}</Title>
+          <Button color="red" variant="outline" onClick={() => void signOut()}>
+            Sign out
+          </Button>
+        </Group>
         <div className="flex items-center space-x-2">
           <TextInput
             className="flex-1"
@@ -84,3 +94,5 @@ export default function Home() {
     </Container>
   );
 }
+
+export const getServerSideProps = verifyAuth;
