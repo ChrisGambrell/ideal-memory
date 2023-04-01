@@ -14,4 +14,10 @@ export const tasksRouter = createTRPCRouter({
       const updatedTask = await ctx.prisma.task.update({ data: input.data, where: { id: input.id } });
       return updatedTask;
     }),
+
+  deleteById: publicProcedure.input(z.object({ id: z.string().cuid() })).mutation(async ({ ctx, input }) => {
+    const taskToDelete = await ctx.prisma.task.findUnique({ where: { id: input.id } });
+    if (!taskToDelete) throw new TRPCError({ code: "NOT_FOUND", message: "Task not found" });
+    await ctx.prisma.task.delete({ where: { id: input.id } });
+  }),
 });
