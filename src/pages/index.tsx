@@ -1,7 +1,9 @@
 import { ActionIcon, Button, Checkbox, Container, Divider, Group, Menu, Stack, Text, TextInput, Title } from "@mantine/core";
+import { useForm, zodResolver } from "@mantine/form";
 import { IconFilter, IconSquareCheck, IconSquareOff, IconTrash } from "@tabler/icons-react";
 import { signOut } from "next-auth/react";
 import { Fragment, useState, type ChangeEvent } from "react";
+import { z } from "zod";
 import { verifyAuth } from "~/server/auth";
 import { api } from "~/utils/api";
 import { useUser } from "~/utils/hooks";
@@ -11,8 +13,14 @@ export default function Home() {
   const [completedFilter, setCompletedFilter] = useState<boolean | null>(null);
   const user = useUser();
 
+  const form = useForm({ initialValues: { body: "" }, validate: zodResolver(z.object({ body: z.string().min(1) })) });
+
   const ctx = api.useContext();
   const { data: tasks = [], isLoading: loadingTasks } = api.tasks.getAll.useQuery();
+  const { mutate: createTask, isLoading: loadingCreateTask } = api.tasks.create.useMutation({
+    onSuccess: () => ctx.tasks.invalidate(),
+    onError: (error) => form.setFieldError("body", error.message),
+  });
   const { mutate: updateTask } = api.tasks.updateById.useMutation({ onSuccess: () => ctx.tasks.invalidate() });
   const { mutate: deleteTask, isLoading: loadingDeleteTask } = api.tasks.deleteById.useMutation({
     onSuccess: () => ctx.tasks.invalidate(),
@@ -23,6 +31,7 @@ export default function Home() {
     .filter(({ body }) => body.toLowerCase().includes(taskFilter.toLowerCase()));
 
   const toggleTask = (id: string) => (e: ChangeEvent<HTMLInputElement>) => updateTask({ id, data: { completed: e.target.checked } });
+  const handleSubmit = (values: typeof form.values) => createTask(values);
 
   if (loadingTasks) return <div>Loading tasks...</div>;
   return (
@@ -90,6 +99,9 @@ export default function Home() {
             </Group>
           )}
         </Stack>
+        <form onSubmit={form.onSubmit(handleSubmit)}>
+          <TextInput disabled={loadingCreateTask} placeholder="New task..." {...form.getInputProps("body")} />
+        </form>
       </Stack>
     </Container>
   );

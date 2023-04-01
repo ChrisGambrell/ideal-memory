@@ -5,6 +5,10 @@ import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 export const tasksRouter = createTRPCRouter({
   getAll: publicProcedure.query(({ ctx }) => ctx.prisma.task.findMany({ orderBy: { createdAt: "desc" } })),
 
+  create: publicProcedure
+    .input(z.object({ body: z.string().min(1) }))
+    .mutation(({ ctx, input }) => ctx.prisma.task.create({ data: { body: input.body } })),
+
   updateById: publicProcedure
     .input(z.object({ id: z.string().cuid(), data: z.object({ completed: z.boolean().optional() }) }))
     .mutation(async ({ ctx, input }) => {
