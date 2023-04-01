@@ -2,6 +2,41 @@
 
 This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
 
+## Blueprint for development
+
+### Phase 1: Task app
+
+- Add, toggle completion, and delete tasks
+- Search for tasks
+- Fiilter tasks based on completed state
+
+### Phase 2: Authentication
+
+- Sign in and sign out
+- Tasks are associated with each user
+- Add account-specific statuses for each task instead of toggle
+
+### Phase 3: Organizations
+
+- User can create organization
+- Organization owner can invite other users to join
+- Organization can have "spaces" where tasks are stored
+- Users are added to spaces. Not every user can see all organization spaces
+
+### Phase 4: Paid plans
+
+- Stripe integration
+- Limits number of users in organization
+- Limits number of spaces in organization
+- Limits amount of tasks in organization
+
+### Plans
+
+1. Basic - 3 users, 5 spaces, 1,000 tasks
+2. Plus - 10 users, 15 spaces, 10,000 tasks
+3. Pro - 50 users, 100 spaces, 500,000 tasks
+4. Enterprise - 1,000 users, unlimited spaces, unlimited tasks
+
 ## What's next? How do I make an app with this?
 
 We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
