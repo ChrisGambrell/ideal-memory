@@ -1,12 +1,16 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, type Prisma } from "@prisma/client";
 const prisma = new PrismaClient();
 
-const TASKS = ["First task!", "Second task!", "Third task!"];
+const mock_tasks: Prisma.TaskCreateInput[] = [
+  { body: "First task!", completed: false },
+  { body: "Second task!", completed: true },
+  { body: "Third task!", completed: false },
+];
 
 async function main() {
-  await Promise.all(
-    TASKS.map((body) => prisma.task.create({ data: { body } }))
-  );
+  await prisma.task.deleteMany({});
+
+  await Promise.all(mock_tasks.map((data) => prisma.task.create({ data })));
 }
 
 main()
