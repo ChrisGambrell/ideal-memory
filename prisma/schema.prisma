@@ -14,10 +14,13 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-model Example {
+model Task {
     id        String   @id @default(cuid())
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
+
+    body      String // @db.Text
+    completed Boolean @default(false)
 }
 
 // Necessary for Next auth
