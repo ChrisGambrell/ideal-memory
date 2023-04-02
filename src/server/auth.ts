@@ -100,7 +100,6 @@ export const getServerAuthSession = (ctx: { req: GetServerSidePropsContext["req"
 
 export async function verifyAuth(ctx: GetServerSidePropsContext) {
   const session = await getServerAuthSession(ctx);
-  console.log(session);
   if (!session) {
     return {
       redirect: {
