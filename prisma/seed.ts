@@ -1,16 +1,30 @@
-import { PrismaClient, type Prisma } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
+import bcrypt from "bcrypt";
 const prisma = new PrismaClient();
 
-const mock_tasks: Prisma.TaskCreateInput[] = [
-  { body: "First task!", completed: false },
-  { body: "Second task!", completed: true },
-  { body: "Third task!", completed: false },
+const mock_tasks = [
+  { body: "first task!", completed: false },
+  { body: "second task!", completed: true },
+  { body: "third task!", completed: false },
 ];
 
 async function main() {
-  await prisma.task.deleteMany({});
+  await prisma.user.deleteMany({});
 
-  await Promise.all(mock_tasks.map((data) => prisma.task.create({ data })));
+  const password = await bcrypt.hash("Passw0rd!", 10);
+  const user1 = await prisma.user.create({
+    data: { name: "John Doe", email: "john@example.com", password, image: "https://api.dicebear.com/6.x/initials/svg?seed=JO" },
+  });
+  const user2 = await prisma.user.create({
+    data: { name: "Jane Doe", email: "jane@example.com", password, image: "https://api.dicebear.com/6.x/initials/svg?seed=JA" },
+  });
+
+  await Promise.all(
+    mock_tasks.map((task) => prisma.task.create({ data: { ...task, body: `${user1.name} ${task.body}`, authorId: user1.id } }))
+  );
+  await Promise.all(
+    mock_tasks.map((task) => prisma.task.create({ data: { ...task, body: `${user2.name} ${task.body}`, authorId: user2.id } }))
+  );
 }
 
 main()
