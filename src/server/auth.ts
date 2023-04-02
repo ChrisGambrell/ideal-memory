@@ -18,14 +18,19 @@ declare module "next-auth" {
   interface Session extends DefaultSession {
     user: {
       id: string;
+      firstName: string;
+      lastName: string;
+      email: string;
+      image: string;
       // ...other properties
       // role: UserRole;
     } & DefaultSession["user"];
   }
 
   // interface User {
-  //   // ...other properties
-  //   // role: UserRole;
+  // id: string;
+  // ...other properties
+  // role: UserRole;
   // }
 }
 
@@ -36,9 +41,15 @@ declare module "next-auth" {
  */
 export const authOptions: NextAuthOptions = {
   callbacks: {
-    session({ session, token }) {
+    async session({ session, token }) {
       if (session.user) {
-        session.user.id = token.sub ?? "";
+        const user = await prisma.user.findUnique({ where: { id: token.sub } });
+        if (!user) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "User not found for session" });
+
+        delete session.user.name;
+        session.user.id = user.id;
+        session.user.firstName = user.firstName;
+        session.user.lastName = user.lastName;
         // session.user.role = user.role; <-- put other properties on the session here
       }
       return session;
@@ -89,6 +100,7 @@ export const getServerAuthSession = (ctx: { req: GetServerSidePropsContext["req"
 
 export async function verifyAuth(ctx: GetServerSidePropsContext) {
   const session = await getServerAuthSession(ctx);
+  console.log(session);
   if (!session) {
     return {
       redirect: {

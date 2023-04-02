@@ -7,7 +7,7 @@ export default function UserControls() {
 
   return (
     <Group position="apart">
-      <Title order={2}>Welcome, {user.name}</Title>
+      <Title order={2}>Welcome, {user.firstName}</Title>
       <Button color="red" variant="outline" onClick={() => void signOut()}>
         Sign out
       </Button>

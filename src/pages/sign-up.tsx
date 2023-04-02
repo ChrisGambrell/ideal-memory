@@ -1,4 +1,4 @@
-import { Anchor, Button, Center, Container, PasswordInput, Stack, Text, TextInput, Title } from "@mantine/core";
+import { Anchor, Button, Center, Container, Group, PasswordInput, Stack, Text, TextInput, Title } from "@mantine/core";
 import { useForm, zodResolver } from "@mantine/form";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -11,13 +11,15 @@ export default function SignUp() {
   const form = useForm({
     initialValues: {
       root: "",
-      name: "",
+      firstName: "",
+      lastName: "",
       email: "",
       password: "",
     },
     validate: zodResolver(
       z.object({
-        name: z.string().min(2),
+        firstName: z.string().min(1),
+        lastName: z.string().min(1),
         email: z.string().email(),
         password: z.string().min(6),
       })
@@ -38,7 +40,10 @@ export default function SignUp() {
           <Center>
             <Title order={2}>Sign up</Title>
           </Center>
-          <TextInput label="Full name" placeholder="Your name" {...form.getInputProps("name")} />
+          <Group grow>
+            <TextInput label="First name" placeholder="Your first name" {...form.getInputProps("firstName")} />
+            <TextInput label="Last name" placeholder="Your last name" {...form.getInputProps("lastName")} />
+          </Group>
           <TextInput label="Email address" placeholder="you@example.com" {...form.getInputProps("email")} />
           <PasswordInput label="Password" {...form.getInputProps("password")} />
           {form.errors.root && (
