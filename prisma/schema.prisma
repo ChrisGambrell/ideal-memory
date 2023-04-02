@@ -19,10 +19,23 @@ model Task {
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
-    body      String // @db.Text
-    completed Boolean @default(false)
-    author    User    @relation(fields: [authorId], references: [id], onDelete: Cascade)
-    authorId  String
+    body     String // @db.Text
+    statusId String
+    authorId String
+
+    author User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
+    status Status @relation(fields: [statusId], references: [id])
+}
+
+model Status {
+    id     String  @id @default(cuid())
+    label  String
+    userId String?
+    tasks  Task[]
+
+    user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@unique([label, userId])
 }
 
 // Necessary for Next auth
@@ -64,6 +77,7 @@ model User {
     accounts      Account[]
     sessions      Session[]
     tasks         Task[]
+    Status        Status[]
 }
 
 model VerificationToken {

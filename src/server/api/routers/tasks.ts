@@ -7,13 +7,14 @@ export const tasksRouter = createTRPCRouter({
     ctx.prisma.task.findMany({ where: { authorId: ctx.session.user.id }, orderBy: { createdAt: "desc" } })
   ),
 
-  create: protectedProcedure
-    .input(z.object({ body: z.string().min(1) }))
-    .mutation(({ ctx, input }) => ctx.prisma.task.create({ data: { body: input.body, authorId: ctx.session.user.id } })),
+  create: protectedProcedure.input(z.object({ body: z.string().min(1) })).mutation(async ({ ctx, input }) => {
+    const status = await ctx.prisma.status.findUnique({ where: { label: "Incomplete" } });
+    return ctx.prisma.task.create({ data: { body: input.body, statusId: status?.id ?? "", authorId: ctx.session.user.id } });
+  }),
 
   // TODO: Check by user id to update
   updateById: protectedProcedure
-    .input(z.object({ id: z.string().cuid(), data: z.object({ completed: z.boolean().optional() }) }))
+    .input(z.object({ id: z.string().cuid(), data: z.object({ statusId: z.string().cuid().optional() }) }))
     .mutation(async ({ ctx, input }) => {
       const taskToUpdate = await ctx.prisma.task.findUnique({ where: { id: input.id } });
       if (!taskToUpdate) throw new TRPCError({ code: "NOT_FOUND", message: "Task not found" });
