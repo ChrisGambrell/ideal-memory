@@ -8,7 +8,7 @@ export const tasksRouter = createTRPCRouter({
   ),
 
   create: protectedProcedure.input(z.object({ body: z.string().min(1) })).mutation(async ({ ctx, input }) => {
-    const status = await ctx.prisma.status.findUnique({ where: { label: "Incomplete" } });
+    const status = await ctx.prisma.status.findFirst({ where: { label: "Incomplete" } });
     return ctx.prisma.task.create({ data: { body: input.body, statusId: status?.id ?? "", authorId: ctx.session.user.id } });
   }),
 

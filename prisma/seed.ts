@@ -8,8 +8,8 @@ async function main() {
   await prisma.user.deleteMany({});
   await prisma.status.deleteMany({});
 
-  const incompleteStatus = await prisma.status.create({ data: { label: "Incomplete" } });
-  await prisma.status.create({ data: { label: "Complete" } });
+  const incompleteStatus = await prisma.status.create({ data: { label: "Incomplete", order: 0 } });
+  await prisma.status.create({ data: { label: "Complete", order: 1 } });
 
   const password = await bcrypt.hash("Passw0rd!", 10);
   const user1 = await prisma.user.create({

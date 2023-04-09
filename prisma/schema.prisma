@@ -30,6 +30,7 @@ model Task {
 model Status {
     id     String  @id @default(cuid())
     label  String
+    order  Int
     userId String?
     tasks  Task[]
 

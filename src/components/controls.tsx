@@ -16,7 +16,7 @@ export default function Controls({
   return (
     <div className="flex items-center space-x-2">
       <TextInput className="flex-1" placeholder="Search for tasks..." value={taskFilter} onChange={(e) => setTaskFilter(e.target.value)} />
-      <Menu position="bottom-end" shadow="md" width={200}>
+      {/* <Menu position="bottom-end" shadow="md" width={200}>
         <Menu.Target>
           <ActionIcon className="flex-shrink-0" bg={completedFilter !== null ? "gray.1" : ""} size="lg" variant="default">
             <IconFilter size="1.125rem" />
@@ -38,7 +38,7 @@ export default function Controls({
             Show Incomplete
           </Menu.Item>
         </Menu.Dropdown>
-      </Menu>
+      </Menu> */}
     </div>
   );
 }

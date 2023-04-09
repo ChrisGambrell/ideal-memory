@@ -19,22 +19,29 @@ export default function Task({ task }: { task: Task }) {
   };
 
   return (
-    <Group position="apart">
-      <Text>{task.body}</Text>
-      <Group spacing="xs">
+    <tr key={task.id}>
+      <td>
+        <Text>{task.body}</Text>
+      </td>
+      <td>
         <Select
           creatable
           data={statuses.map((s) => ({ label: s.label, value: s.id }))}
           searchable
           value={task.statusId}
+          variant="unstyled"
           onChange={handleUpdateTask}
           getCreateLabel={(query) => `+ Create ${query}`}
           onCreate={handleCreateStatus}
         />
-        <ActionIcon color="red" loading={loadingDeleteTask} size="sm" variant="subtle" onClick={() => deleteTask({ id: task.id })}>
-          <IconTrash size="0.875rem" />
-        </ActionIcon>
-      </Group>
-    </Group>
+      </td>
+      <td>
+        <Group spacing={0} position="right">
+          <ActionIcon color="red" loading={loadingDeleteTask} onClick={() => deleteTask({ id: task.id })}>
+            <IconTrash size="1rem" stroke={1.5} />
+          </ActionIcon>
+        </Group>
+      </td>
+    </tr>
   );
 }

@@ -1,6 +1,6 @@
-import { Container, Divider, Group, Stack, Text, TextInput } from "@mantine/core";
+import { Container, Stack, Table, TextInput } from "@mantine/core";
 import { useForm, zodResolver } from "@mantine/form";
-import { Fragment, useState } from "react";
+import { useState } from "react";
 import { z } from "zod";
 import Controls from "~/components/controls";
 import Task from "~/components/task";
@@ -21,9 +21,7 @@ export default function Home() {
     onError: (error) => form.setFieldError("body", error.message),
   });
 
-  const filteredTasks = tasks
-    .filter(({ completed }) => (completedFilter === null ? true : completed === completedFilter))
-    .filter(({ body }) => body.toLowerCase().includes(taskFilter.toLowerCase()));
+  const filteredTasks = tasks.filter(({ body }) => body.toLowerCase().includes(taskFilter.toLowerCase()));
 
   const handleSubmit = (values: typeof form.values) => createTask(values);
 
@@ -38,20 +36,20 @@ export default function Home() {
           taskFilter={taskFilter}
           setTaskFilter={setTaskFilter}
         />
-        <Stack spacing="xs">
-          {filteredTasks.length > 0 ? (
-            filteredTasks.map((task, i) => (
-              <Fragment key={task.id}>
-                <Task task={task} />
-                {i !== filteredTasks.length - 1 && <Divider my={4} />}
-              </Fragment>
-            ))
-          ) : (
-            <Group position="center">
-              <Text c="gray">Nothing here!</Text>
-            </Group>
-          )}
-        </Stack>
+        <Table verticalSpacing="sm">
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Status</th>
+              <th />
+            </tr>
+          </thead>
+          <tbody>
+            {filteredTasks.map((task) => (
+              <Task key={task.id} task={task} />
+            ))}
+          </tbody>
+        </Table>
         <form onSubmit={form.onSubmit(handleSubmit)}>
           <TextInput disabled={loadingCreateTask} placeholder="New task..." {...form.getInputProps("body")} />
         </form>
